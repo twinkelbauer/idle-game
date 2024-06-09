@@ -1,0 +1,32 @@
+name: distribute
+on: push
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      deployments: write
+      statuses: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+          
+      - name: clean
+        run: ./gradlew clean
+
+      - name: assemble
+        run: ./gradlew wasmJsBrowserDistribution
+      - name: Vercel Actions
+        uses: nexterias/actions-vercel@v1.2.1
+        with:
+          token: ${{ secrets.VERCEL_TOKEN }}
+          project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          org-id: ${{ secrets.VERCEL_ORG_ID }}
+          prebuilt: true
+          cwd: composeApp/build/dist/wasmJs/productionExecutable/
+          
