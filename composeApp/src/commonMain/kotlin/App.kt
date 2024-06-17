@@ -38,9 +38,6 @@ fun App() {
 @Preview
 fun Screen() {
     Scaffold(
-        topBar = {
-            Text("Top bar")
-        },
         content = {
             val coroutineScope = rememberCoroutineScope()
             val viewModel by remember {
