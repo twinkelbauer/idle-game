@@ -44,3 +44,6 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: composeApp/build/dist/wasmJs/productionExecutable/
+      - name: Deploy artifact
+        id: deployment
+        uses: actions/deploy-pages@v1
