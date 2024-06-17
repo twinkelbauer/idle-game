@@ -13,8 +13,10 @@ interface Clock {
 }
 
 const val GAME_TICK = 1000L
-val Int.tick: Tick get() = TickImpl(this * GAME_TICK)
-val Long.tick: Tick get() = TickImpl(this * GAME_TICK)
+
+val Int.tick: Tick get() = Tick(this * GAME_TICK)
+val Long.tick: Tick get() = Tick(this * GAME_TICK)
+
 val clock = object : Clock {
     private val _nowState: MutableStateFlow<Long> = MutableStateFlow(0L)
     override val nowState: StateFlow<Long> = _nowState.asStateFlow()

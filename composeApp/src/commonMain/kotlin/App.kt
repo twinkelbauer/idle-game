@@ -1,5 +1,5 @@
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import util.GAME_TICK
 import util.clock
-import util.tick
 import vw.GameViewModel
 
 @Composable
@@ -34,14 +33,6 @@ fun App() {
         Screen()
     }
 }
-
-private val availableJobs: List<GameJob> = listOf(
-    GameJob(earn = 10, cost = 10, 5.tick),
-    GameJob(earn = 20, cost = 20, 7.tick),
-    GameJob(earn = 30, cost = 30, 12.tick),
-    GameJob(earn = 40, cost = 40, 20.tick),
-    GameJob(earn = 50, cost = 50, 30.tick),
-)
 
 @Composable
 @Preview
@@ -67,12 +58,12 @@ fun Screen() {
             }
 
             val gameState: GameState by viewModel.gameState.collectAsState()
-            val currentMoney: Long by viewModel.currentMoney.collectAsState()
+            val currentMoney: Gelds by viewModel.currentMoney.collectAsState()
             val now by viewModel.clock.nowState.collectAsState()
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text("Current tick: ${now / GAME_TICK} sec")
-                Text("Current money: ${currentMoney} Euro")
+                Text("Current money: $currentMoney Euro")
                 Text("Active Workers: ${gameState.workers.size}")
 
                 Button(onClick = { viewModel.clickMoney() }) {
@@ -80,14 +71,12 @@ fun Screen() {
                 }
 
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(availableJobs) {
+                    items(gameState.availableJobs) { availableJob ->
                         Worker(
-                            name = "Job ${it.earn} Cost: ${it.cost}",
-                            duration = "${it.duration.raw / GAME_TICK} sec",
-                            money = "${it.earn} Euro",
-                            modifier = Modifier.clickable(enabled = currentMoney > it.cost) {
-                                viewModel.addWorker(it)
-                            }
+                            gameJob = availableJob,
+                            alreadyBought = gameState.workers.any { it.jobId == availableJob.id },
+                            onBuy = { viewModel.addWorker(availableJob) },
+                            onUpgrade = { viewModel.upgradeJob(availableJob) }
                         )
                     }
                 }
@@ -98,21 +87,35 @@ fun Screen() {
 
 @Composable
 fun Worker(
-    name: String,
-    duration: String,
-    money: String,
-    modifier: Modifier = Modifier
+    gameJob: GameJob,
+    alreadyBought: Boolean,
+    modifier: Modifier = Modifier,
+    onBuy: () -> Unit = {},
+    onUpgrade: () -> Unit = {},
 ) {
     Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
             .padding(8.dp)
             .background(Color.LightGray, RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
         Column {
-            Text(name)
-            Text("Duration: $duration")
-            Text("Earns: $money")
+            Text("Name 1")
+            Text("Level: ${gameJob.level.level}")
+            Text("Costs: ${gameJob.level.cost}")
+            Text("Earns: ${gameJob.level.earn}")
+            Text("Duration: ${gameJob.level.duration.raw} Ticks")
+        }
+        if (!alreadyBought) {
+            Button(onClick = onBuy) {
+                Text("Buy")
+            }
+        } else {
+            Text("Bought")
+        }
+        Button(onClick = onUpgrade) {
+            Text("Upgrade")
         }
     }
 }
