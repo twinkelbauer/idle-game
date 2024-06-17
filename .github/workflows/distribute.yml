@@ -2,8 +2,36 @@ name: distribute
 on: push
 
 jobs:
-  pipeline:
+  build:
     runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Clean
+        run: ./gradlew clean
+
+      - name: Assemble WASM
+        run: ./gradlew wasmJsBrowserDistribution
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: composeApp/build/dist/wasmJs/productionExecutable/
+
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: build
     permissions:
       contents: read
       pages: write
@@ -12,38 +40,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
-
-      - name: clean
-        run: ./gradlew clean
-
-      - name: assemble
-        run: ./gradlew wasmJsBrowserDistribution
-      #      - name: Vercel Actions
-      #        uses: nexterias/actions-vercel@v1.2.1
-      #        with:
-      #          token: ${{ secrets.VERCEL_TOKEN }}
-      #          project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-      #          org-id: ${{ secrets.VERCEL_ORG_ID }}
-      #          prebuilt: true
-      #          cwd: composeApp/build/dist/wasmJs/productionExecutable/
-#      - name: Archive production artifacts
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: wasm-artifact
-#          path: |
-#            composeApp/build/dist/wasmJs/productionExecutable/
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: composeApp/build/dist/wasmJs/productionExecutable/
       - name: Deploy artifact
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v2
