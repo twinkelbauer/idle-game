@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import util.GAME_TICK
-import util.clock
 import vw.GameViewModel
 
 @Composable
@@ -44,7 +44,6 @@ fun Screen() {
                 mutableStateOf(
                     GameViewModel(
                         scope = coroutineScope,
-                        clock = clock
                     )
                 )
             }
@@ -55,15 +54,17 @@ fun Screen() {
             }
 
             val gameState: GameState by viewModel.gameState.collectAsState()
-            val currentMoney: Gelds by viewModel.currentMoney.collectAsState()
-            val now by viewModel.clock.nowState.collectAsState()
+            val currentMoney: Gelds by remember(gameState) {
+                derivedStateOf { gameState.stashedMoney }
+            }
+            val now by viewModel.gameClock.nowState.collectAsState()
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text("Current tick: ${now / GAME_TICK} sec")
-                Text("Current money: $currentMoney Euro")
+                Text("Current money: ${currentMoney} Gelds")
                 Text("Active Workers: ${gameState.workers.size}")
 
-                Button(onClick = { viewModel.clickMoney() }) {
+                Button(onClick = { viewModel.clickMoney(gameState) }) {
                     Text("Click money")
                 }
 
@@ -72,8 +73,8 @@ fun Screen() {
                         Worker(
                             gameJob = availableJob,
                             alreadyBought = gameState.workers.any { it.jobId == availableJob.id },
-                            onBuy = { viewModel.addWorker(availableJob) },
-                            onUpgrade = { viewModel.upgradeJob(availableJob) }
+                            onBuy = { viewModel.addWorker(gameState, availableJob) },
+                            onUpgrade = { viewModel.upgradeJob(gameState, availableJob) }
                         )
                     }
                 }
@@ -98,7 +99,7 @@ fun Worker(
             .padding(8.dp)
     ) {
         Column {
-            Text("Name 1")
+            Text("Generator ${gameJob.id}")
             Text("Level: ${gameJob.level.level}")
             Text("Costs: ${gameJob.level.cost}")
             Text("Earns: ${gameJob.level.earn}")

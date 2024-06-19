@@ -55,6 +55,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.bignum)
         }
         desktopMain.dependencies {

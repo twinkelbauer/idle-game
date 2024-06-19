@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-interface Clock {
+interface GameClock {
     val nowState: StateFlow<Long>
     fun now(): Long
 
@@ -17,7 +17,7 @@ const val GAME_TICK = 1000L
 val Int.tick: Tick get() = Tick(this * GAME_TICK)
 val Long.tick: Tick get() = Tick(this * GAME_TICK)
 
-val clock = object : Clock {
+object GameClockImpl : GameClock {
     private val _nowState: MutableStateFlow<Long> = MutableStateFlow(0L)
     override val nowState: StateFlow<Long> = _nowState.asStateFlow()
 
