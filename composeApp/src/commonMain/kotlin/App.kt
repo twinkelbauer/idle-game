@@ -2,11 +2,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -23,7 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import util.GAME_TICK
+import util.Gelds
+import util.toHumanReadableString
 import vw.GameViewModel
 
 @Composable
@@ -53,28 +56,44 @@ fun Screen() {
                 }
             }
 
-            val gameState: GameState by viewModel.gameState.collectAsState()
-            val currentMoney: Gelds by remember(gameState) {
-                derivedStateOf { gameState.stashedMoney }
+            val gameState: GameState? by viewModel.gameState.collectAsState()
+            val currentMoney: Gelds? by remember(gameState) {
+                derivedStateOf { gameState?.stashedMoney }
             }
-            val now by viewModel.gameClock.nowState.collectAsState()
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text("Current tick: ${now / GAME_TICK} sec")
-                Text("Current money: ${currentMoney} Gelds")
-                Text("Active Workers: ${gameState.workers.size}")
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    "Idle Game",
+                    style = MaterialTheme.typography.h1,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Button(onClick = { viewModel.clickMoney(gameState) }) {
-                    Text("Click money")
+                Button(
+                    onClick = { viewModel.reset() }
+                ) {
+                    Text("Reset Game")
                 }
 
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(gameState.availableJobs) { availableJob ->
-                        Worker(
+                gameState?.let { state ->
+                    Text(
+                        "Bank: ${currentMoney?.toHumanReadableString()} Gelds",
+                        style = MaterialTheme.typography.h4,
+                    )
+                    Button(
+                        onClick = { viewModel.clickMoney(state) }
+                    ) {
+                        Text("Click money")
+                    }
+
+                    state.availableJobs.forEach { availableJob ->
+                        Generator(
                             gameJob = availableJob,
-                            alreadyBought = gameState.workers.any { it.jobId == availableJob.id },
-                            onBuy = { viewModel.addWorker(gameState, availableJob) },
-                            onUpgrade = { viewModel.upgradeJob(gameState, availableJob) }
+                            alreadyBought = state.workers.any { it.jobId == availableJob.id },
+                            onBuy = { viewModel.addWorker(state, availableJob) },
+                            onUpgrade = { viewModel.upgradeJob(state, availableJob) }
                         )
                     }
                 }
@@ -84,7 +103,7 @@ fun Screen() {
 }
 
 @Composable
-fun Worker(
+private fun Generator(
     gameJob: GameJob,
     alreadyBought: Boolean,
     modifier: Modifier = Modifier,
@@ -101,9 +120,9 @@ fun Worker(
         Column {
             Text("Generator ${gameJob.id}")
             Text("Level: ${gameJob.level.level}")
-            Text("Costs: ${gameJob.level.cost}")
-            Text("Earns: ${gameJob.level.earn}")
-            Text("Duration: ${gameJob.level.duration.raw} Ticks")
+            Text("Costs: ${gameJob.level.cost.toHumanReadableString()} Gelds")
+            Text("Earns: ${gameJob.level.earn.toHumanReadableString()} Gelds")
+            Text("Duration: ${gameJob.level.duration.inWholeSeconds} Seconds")
         }
         if (!alreadyBought) {
             Button(onClick = onBuy) {
