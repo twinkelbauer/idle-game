@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -23,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import util.Gelds
@@ -61,20 +60,33 @@ fun Screen() {
                 derivedStateOf { gameState?.stashedMoney }
             }
 
+
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
+                Column() {
+                    Text("datum:")
+                    Text("3•7•24")
+                }
                 Text(
-                    "Idle Game",
+                    "Delphin",
                     style = MaterialTheme.typography.h1,
+                    color = Color(179, 230, 255)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { viewModel.reset() }
+                    onClick = { viewModel.reset() },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(
+                            255, 153, 0
+                        )
+                    )
                 ) {
-                    Text("Reset Game")
+                    Text("Reset Game",
+                        fontFamily = FontFamily.Serif
+                        )
                 }
 
                 gameState?.let { state ->
