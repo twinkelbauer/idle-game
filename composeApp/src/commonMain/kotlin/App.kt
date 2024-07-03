@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import util.Gelds
 import util.toHumanReadableString
@@ -62,15 +64,20 @@ fun Screen() {
 
 
             Column(
+
                 modifier = Modifier.fillMaxWidth()
                     .verticalScroll(rememberScrollState())
+                    .background(Color(245, 245, 160))
+                    .padding(end = 16.dp),
+                horizontalAlignment = Alignment.End
+
             ) {
                 Column() {
                     Text("datum:")
                     Text("3•7•24")
                 }
                 Text(
-                    "Delphin",
+                    "Shnée",
                     style = MaterialTheme.typography.h1,
                     color = Color(179, 230, 255)
                 )
@@ -91,14 +98,23 @@ fun Screen() {
 
                 gameState?.let { state ->
                     Text(
-                        "Bank: ${currentMoney?.toHumanReadableString()} Gelds",
+                        "Schneeflocken: ${currentMoney?.toHumanReadableString()} ",
                         style = MaterialTheme.typography.h4,
                     )
                     Button(
-                        onClick = { viewModel.clickMoney(state) }
+                        onClick = { viewModel.clickMoney(state) },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(
+                                244, 244, 244
+                            )
+                        )
                     ) {
-                        Text("Click money")
+                        Text("Click",)
                     }
+
+                    Text("Zeug zum Kaufen:")
+                    Text("ƒ= Flocken, cl= Klick,\n" +
+                            "-- xyƒ = Preis")
 
                     state.availableJobs.forEach { availableJob ->
                         Generator(
@@ -123,28 +139,41 @@ private fun Generator(
     onUpgrade: () -> Unit = {},
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier
             .padding(8.dp)
-            .background(Color.LightGray, RoundedCornerShape(8.dp))
+            .background(Color(255, 202, 12), RoundedCornerShape(3.dp))
             .padding(8.dp)
+
+
+
     ) {
-        Column {
-            Text("Generator ${gameJob.id}")
-            Text("Level: ${gameJob.level.level}")
-            Text("Costs: ${gameJob.level.cost.toHumanReadableString()} Gelds")
-            Text("Earns: ${gameJob.level.earn.toHumanReadableString()} Gelds")
-            Text("Duration: ${gameJob.level.duration.inWholeSeconds} Seconds")
+        Column() {
+            //Text("Generator ${gameJob.id}")
+            //Text("Level: ${gameJob.level.level}")
+            Text(" ${gameJob.level.earn.toHumanReadableString()}ƒ/sec")
+            Text("-- ${gameJob.level.cost.toHumanReadableString()} ƒ")
+            //Text("Duration: ${gameJob.level.duration.inWholeSeconds} ƒ")
         }
         if (!alreadyBought) {
-            Button(onClick = onBuy) {
-                Text("Buy")
+            Button(onClick = onBuy,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(
+                        255, 255, 255
+                    )
+                )) {
+                Text("Buy", color = Color(74, 101, 241))
             }
         } else {
             Text("Bought")
         }
-        Button(onClick = onUpgrade) {
-            Text("Upgrade")
+        Button(onClick = onUpgrade,
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(
+                    255, 255, 255
+                )
+            )) {
+            Text("Upgrade", color = Color(74, 101, 241))
         }
     }
 }

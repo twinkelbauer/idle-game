@@ -13,11 +13,11 @@ data class GameState(
     internal val stashedMoney: Gelds,
     val workers: List<GameWorker>,
     val availableJobs: List<GameJob> = listOf(
-        GameJob(1, Level(1, 10.gelds, 1.gelds, 1.seconds)),
-        GameJob(2, Level(1, 50.gelds, 10.gelds, 10.seconds)),
-        GameJob(3, Level(1, 250.gelds, 50.gelds, 30.seconds)),
-        GameJob(4, Level(1, 500.gelds, 250.gelds, 60.seconds)),
-        GameJob(5, Level(1, 1000.gelds, 500.gelds, 120.seconds))
+        GameJob(1, Level(1, 9.gelds, 1.gelds, 10.seconds)),
+        GameJob(2, Level(1, 49.gelds, 2.gelds, 1.seconds)),
+        GameJob(3, Level(1, 111.gelds, 10.gelds, 1.seconds)),
+        GameJob(4, Level(1, 539.gelds, 55.gelds, 1.seconds)),
+        GameJob(5, Level(1, 1045.gelds, 140.gelds, 1.seconds))
     ),
 )
 
@@ -50,6 +50,7 @@ data class Level(
 ) {
     fun upgradeEfficiency() = copy(
         level = level + 1,
-        earn = earn * 2,
+        earn = earn + 3,
+        cost = cost + 1,
     )
 }
