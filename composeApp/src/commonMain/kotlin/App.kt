@@ -1,4 +1,4 @@
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
@@ -23,8 +21,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.createFontFamilyResolver
+import idle_game.composeapp.generated.resources.*
+import idle_game.composeapp.generated.resources.Res
+import idle_game.composeapp.generated.resources.emfaticknfregular
+import idle_game.composeapp.generated.resources.superfly
+import idle_game.composeapp.generated.resources.velcro
+import idle_game.composeapp.generated.resources.wunderland
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import util.Gelds
 import util.toHumanReadableString
@@ -41,6 +49,12 @@ fun App() {
 @Composable
 @Preview
 fun Screen() {
+
+    val CFFsuperfly = FontFamily(Font(Res.font.superfly, FontWeight.Normal))
+    val CFFemfatick = FontFamily(Font(Res.font.emfaticknfregular, FontWeight.Normal))
+    val CFFvelcro = FontFamily(Font(Res.font.velcro, FontWeight.Normal))
+    val CFFwunderland = FontFamily(Font(Res.font.wunderland, FontWeight.Normal))
+
     Scaffold(
         content = {
             val coroutineScope = rememberCoroutineScope()
@@ -91,30 +105,49 @@ fun Screen() {
                         )
                     )
                 ) {
-                    Text("Reset Game",
+                    Text(
+                        "Reset Game",
                         fontFamily = FontFamily.Serif
-                        )
+                    )
                 }
 
                 gameState?.let { state ->
                     Text(
-                        "Schneeflocken: ${currentMoney?.toHumanReadableString()} ",
+                        "Schneeflocken:",
                         style = MaterialTheme.typography.h4,
+                        fontFamily = CFFemfatick
                     )
-                    Button(
-                        onClick = { viewModel.clickMoney(state) },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color(
-                                244, 244, 244
-                            )
+                    Text(
+                        "${currentMoney?.toHumanReadableString()} ",
+                        fontFamily = CFFvelcro,
+                        style = MaterialTheme.typography.h2,
+                    )
+
+                    Box(
+                        modifier = Modifier.offset(
+                            x = -600.dp, y = 0.dp
                         )
                     ) {
-                        Text("Click",)
+                        Image(
+                            painterResource(Res.drawable.clickcloud),
+                            contentDescription = "Click on this cloud",
+                            modifier = Modifier.clickable { viewModel.clickMoney(state) }
+                        )
+
                     }
 
-                    Text("Zeug zum Kaufen:")
-                    Text("ƒ= Flocken, cl= Klick,\n" +
-                            "-- xyƒ = Preis")
+                    Text(
+                        "ZEUG zUm\n" +
+                                "KAUFeN:",
+                        fontFamily = CFFsuperfly,
+                        style = MaterialTheme.typography.h2,
+                    )
+                    Text(
+                        "ƒ= Flocken, cl= Klick,\n" +
+                                "-- xyƒ = Preis",
+                        fontFamily = CFFemfatick,
+                        style = MaterialTheme.typography.h4
+                    )
 
                     state.availableJobs.forEach { availableJob ->
                         Generator(
@@ -146,7 +179,6 @@ private fun Generator(
             .padding(8.dp)
 
 
-
     ) {
         Column() {
             //Text("Generator ${gameJob.id}")
@@ -156,23 +188,27 @@ private fun Generator(
             //Text("Duration: ${gameJob.level.duration.inWholeSeconds} ƒ")
         }
         if (!alreadyBought) {
-            Button(onClick = onBuy,
+            Button(
+                onClick = onBuy,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(
                         255, 255, 255
                     )
-                )) {
+                )
+            ) {
                 Text("Buy", color = Color(74, 101, 241))
             }
         } else {
             Text("Bought")
         }
-        Button(onClick = onUpgrade,
+        Button(
+            onClick = onUpgrade,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(
                     255, 255, 255
                 )
-            )) {
+            )
+        ) {
             Text("Upgrade", color = Color(74, 101, 241))
         }
     }
