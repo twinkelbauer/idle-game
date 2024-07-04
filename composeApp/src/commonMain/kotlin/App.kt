@@ -77,6 +77,34 @@ fun Screen() {
             }
 
 
+            gameState?.let { state ->
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Column()
+                    {
+
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    )
+                    {
+                        Image(
+                            painterResource(Res.drawable.clickcloud),
+                            contentDescription = "Click on this cloud",
+                            modifier = Modifier.clickable { viewModel.clickMoney(state) }
+                        )
+                    }
+                    Column()
+                    {
+
+                    }
+                }
+            }
+
+
+
             Column(
 
                 modifier = Modifier.fillMaxWidth()
@@ -86,6 +114,36 @@ fun Screen() {
                 horizontalAlignment = Alignment.End
 
             ) {
+
+                Row() {
+                    gameState?.let { state ->
+                        Box(
+                            modifier = Modifier.offset(
+                                x = -600.dp, y = 0.dp
+                            )
+                        ) {
+                            Image(
+                                painterResource(Res.drawable.clickcloud),
+                                contentDescription = "Click on this cloud",
+                                modifier = Modifier.clickable { viewModel.clickMoney(state) }
+                            )
+                        }
+
+                        Column() {
+                            Text(
+                                "Schneeflocken:",
+                                style = MaterialTheme.typography.h4,
+                                fontFamily = CFFemfatick
+                            )
+                            Text(
+                                "${currentMoney?.toHumanReadableString()} ",
+                                fontFamily = CFFvelcro,
+                                style = MaterialTheme.typography.h2,
+                            )
+                        }
+                    }
+                }
+
                 Column() {
                     Text("datum:")
                     Text("3•7•24")
