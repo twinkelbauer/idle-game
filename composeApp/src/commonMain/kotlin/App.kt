@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.style.TextAlign
@@ -75,43 +76,95 @@ fun Screen() {
             var showDialog by remember { mutableStateOf(false) }
 
             gameState?.let { state ->
-                Row( //Reihe für die 3 Columns
-                    modifier = Modifier.fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Column()
-                    {
-                        Text(
-                            "Schneeflocken:",
-                            style = MaterialTheme.typography.h4,
-                            fontFamily = CFFemfatick
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(end = 16.dp)
+                        .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color(0xFF4A48C3), Color(0xFF807DE3))
                         )
+                    ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+
+                    Spacer(modifier = Modifier.height(100.dp))
+                    Image(
+                        painterResource(Res.drawable.clickcloud),
+                        contentDescription = "Click on this cloud",
+                        modifier = Modifier.clickable { viewModel.clickMoney(state) }
+                    )
+                }
+            }
+
+            Column(modifier = Modifier
+                .background(Color(0, 0, 0, 0))
+                .padding(start = 16.dp, top = 16.dp)
+            ){
+                Column(modifier = Modifier
+                    .clip(shape = RoundedCornerShape(3.dp))
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(Color(0x759DF3FF), Color(0x75D4F9FE))
+                        )
+                    )
+                    .padding(start = 12.dp,  end = 12.dp, top = 4.dp, bottom = 4.dp)
+                ) {
+                    Text(
+                        "Schneeflocken:",
+                        style = MaterialTheme.typography.h4,
+                        fontFamily = CFFemfatick,
+                        color = Color(255, 255, 255),
+                    )
+                    Text(
+                        "${currentMoney?.toHumanReadableString()} ",
+                        fontFamily = CFFvelcro,
+                        style = MaterialTheme.typography.h2,
+                        color = Color(255, 255, 255),
+                    )
+                }
+            }
+
+            gameState?.let { state ->
+                Column(modifier = Modifier
+                    .background(Color(0, 0, 0, 0))
+                    .fillMaxWidth(),
+                    horizontalAlignment = Alignment.End,
+                ) {
+
+                    Column(modifier = Modifier
+                        .clip(RoundedCornerShape(topStart = 3.dp, bottomStart = 3.dp))
+                        .background(Color(255, 245, 160))
+                        .fillMaxHeight()
+                        .padding(start = 12.dp,  end = 12.dp, top = 4.dp, bottom = 4.dp)
+                    ){
                         Text(
-                            "${currentMoney?.toHumanReadableString()} ",
-                            fontFamily = CFFvelcro,
+                            "ZEUG zUm\n" +
+                                    "KAUFeN:",
+                            fontFamily = CFFsuperfly,
                             style = MaterialTheme.typography.h2,
                         )
-                    }
-                    Column( //Column nr2 für Wolke und Flocken
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    )
-                    {
-                        Image(
-                            painterResource(Res.drawable.clickcloud),
-                            contentDescription = "Click on this cloud",
-                            modifier = Modifier.clickable { viewModel.clickMoney(state) }
+                        Text(
+                            "ƒ= Flocken, cl= Klick,\n" +
+                                    "-- xyƒ = Preis",
+                            fontFamily = CFFemfatick,
+                            style = MaterialTheme.typography.h4
                         )
-                    }
-                    Column() //Column nr3 für Upgrades
-                    {
 
+                        state.availableJobs.forEach { availableJob ->
+                            Generator(
+                                gameJob = availableJob,
+                                alreadyBought = state.workers.any { it.jobId == availableJob.id },
+                                onBuy = { viewModel.addWorker(state, availableJob) },
+                                onUpgrade = { viewModel.upgradeJob(state, availableJob) }
+                            )
+                        }
                     }
                 }
             }
 
-
-
-            Column(
+            /*Column(
 
                 modifier = Modifier.fillMaxWidth()
                     .verticalScroll(rememberScrollState())
@@ -121,14 +174,14 @@ fun Screen() {
                             colors = listOf(Color(0xFF4A48C3), Color(0xFF807DE3))
                         )
                     ),
-                horizontalAlignment = Alignment.End,
+                horizontalAlignment = Alignment.Start,
 
                 ) {
 
                 Column() {
                     Text("© 2024")
                 }
-                Row(){
+                Column(){
                         Text(
                             "Schneeflocken:",
                             style = MaterialTheme.typography.h4,
@@ -162,53 +215,14 @@ fun Screen() {
                 }
 
                 gameState?.let { state ->
-                    Text(
-                        "Schneeflocken:",
-                        style = MaterialTheme.typography.h4,
-                        fontFamily = CFFemfatick
-                    )
-                    Text(
-                        "${currentMoney?.toHumanReadableString()} ",
-                        fontFamily = CFFvelcro,
-                        style = MaterialTheme.typography.h2,
-                    )
 
-                    Box(
-                        modifier = Modifier.offset(
-                            x = -600.dp, y = 0.dp
-                        )
-                    ) {
-                        Image(
-                            painterResource(Res.drawable.clickcloud),
-                            contentDescription = "Click on this cloud",
-                            modifier = Modifier.clickable { viewModel.clickMoney(state) }
-                        )
 
-                    }
 
-                    Text(
-                        "ZEUG zUm\n" +
-                                "KAUFeN:",
-                        fontFamily = CFFsuperfly,
-                        style = MaterialTheme.typography.h2,
-                    )
-                    Text(
-                        "ƒ= Flocken, cl= Klick,\n" +
-                                "-- xyƒ = Preis",
-                        fontFamily = CFFemfatick,
-                        style = MaterialTheme.typography.h4
-                    )
 
-                    state.availableJobs.forEach { availableJob ->
-                        Generator(
-                            gameJob = availableJob,
-                            alreadyBought = state.workers.any { it.jobId == availableJob.id },
-                            onBuy = { viewModel.addWorker(state, availableJob) },
-                            onUpgrade = { viewModel.upgradeJob(state, availableJob) }
-                        )
-                    }
                 }
             }
+
+             */
         }
     )
 }
@@ -227,8 +241,6 @@ private fun Generator(
             .padding(8.dp)
             .background(Color(255, 202, 12), RoundedCornerShape(3.dp))
             .padding(8.dp)
-
-
     ) {
         Column() {
             //Text("Generator ${gameJob.id}")
