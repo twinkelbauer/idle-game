@@ -10,21 +10,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.createFontFamilyResolver
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.Dialog
 import idle_game.composeapp.generated.resources.*
 import idle_game.composeapp.generated.resources.Res
 import idle_game.composeapp.generated.resources.emfaticknfregular
@@ -71,22 +67,32 @@ fun Screen() {
                 }
             }
 
+
             val gameState: GameState? by viewModel.gameState.collectAsState()
             val currentMoney: Gelds? by remember(gameState) {
                 derivedStateOf { gameState?.stashedMoney }
             }
-
+            var showDialog by remember { mutableStateOf(false) }
 
             gameState?.let { state ->
-                Row(
+                Row( //Reihe für die 3 Columns
                     modifier = Modifier.fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                 ) {
                     Column()
                     {
-
+                        Text(
+                            "Schneeflocken:",
+                            style = MaterialTheme.typography.h4,
+                            fontFamily = CFFemfatick
+                        )
+                        Text(
+                            "${currentMoney?.toHumanReadableString()} ",
+                            fontFamily = CFFvelcro,
+                            style = MaterialTheme.typography.h2,
+                        )
                     }
-                    Column(
+                    Column( //Column nr2 für Wolke und Flocken
                         horizontalAlignment = Alignment.CenterHorizontally
                     )
                     {
@@ -96,7 +102,7 @@ fun Screen() {
                             modifier = Modifier.clickable { viewModel.clickMoney(state) }
                         )
                     }
-                    Column()
+                    Column() //Column nr3 für Upgrades
                     {
 
                     }
@@ -109,44 +115,18 @@ fun Screen() {
 
                 modifier = Modifier.fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .background(Color(245, 245, 160))
-                    .padding(end = 16.dp),
-                horizontalAlignment = Alignment.End
+                    .padding(end = 16.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color(0xFF4A48C3), Color(0xFF807DE3))
+                        )
+                    ),
+                horizontalAlignment = Alignment.End,
 
-            ) {
-
-                Row() {
-                    gameState?.let { state ->
-                        Box(
-                            modifier = Modifier.offset(
-                                x = -600.dp, y = 0.dp
-                            )
-                        ) {
-                            Image(
-                                painterResource(Res.drawable.clickcloud),
-                                contentDescription = "Click on this cloud",
-                                modifier = Modifier.clickable { viewModel.clickMoney(state) }
-                            )
-                        }
-
-                        Column() {
-                            Text(
-                                "Schneeflocken:",
-                                style = MaterialTheme.typography.h4,
-                                fontFamily = CFFemfatick
-                            )
-                            Text(
-                                "${currentMoney?.toHumanReadableString()} ",
-                                fontFamily = CFFvelcro,
-                                style = MaterialTheme.typography.h2,
-                            )
-                        }
-                    }
-                }
+                ) {
 
                 Column() {
-                    Text("datum:")
-                    Text("3•7•24")
+                    Text("© 2024")
                 }
                 Text(
                     "Shnée",
@@ -271,3 +251,31 @@ private fun Generator(
         }
     }
 }
+
+@Composable
+fun MinimalDialog(onDismissRequest: () -> Unit) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Text(
+                text = "This is a minimal dialog",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center),
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+
+
+
+
+
+
