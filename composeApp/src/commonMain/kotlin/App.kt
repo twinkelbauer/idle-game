@@ -128,6 +128,18 @@ fun Screen() {
                 Column() {
                     Text("© 2024")
                 }
+                Row(){
+                        Text(
+                            "Schneeflocken:",
+                            style = MaterialTheme.typography.h4,
+                            fontFamily = CFFemfatick
+                        )
+                        Text(
+                            "${currentMoney?.toHumanReadableString()} ",
+                            fontFamily = CFFvelcro,
+                            style = MaterialTheme.typography.h2,
+                        )
+                }
                 Text(
                     "Shnée",
                     style = MaterialTheme.typography.h1,
