@@ -160,9 +160,24 @@ fun Screen() {
                                 onUpgrade = { viewModel.upgradeJob(state, availableJob) }
                             )
                         }
+
+                        Button(
+                            onClick = { viewModel.reset() },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(
+                                    255, 153, 0
+                                )
+                            )
+                        ) {
+                            Text(
+                                "Reset Game",
+                                fontFamily = FontFamily.Serif
+                            )
+                        }
                     }
                 }
             }
+
 
             /*Column(
 
