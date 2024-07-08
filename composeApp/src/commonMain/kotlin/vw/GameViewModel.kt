@@ -80,7 +80,7 @@ internal class GameViewModel(
     }
 
     fun clickMoney(gameState: GameState) {
-        gameRepository.saveGame(gameState.copy(stashedMoney = gameState.stashedMoney + 10000.gelds))
+        gameRepository.saveGame(gameState.copy(stashedMoney = gameState.stashedMoney + 1.gelds))
     }
 
     fun reset() {
