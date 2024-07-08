@@ -174,6 +174,7 @@ fun Screen() {
                                 fontFamily = FontFamily.Serif
                             )
                         }
+                        Text("© 2024")
                     }
                 }
             }

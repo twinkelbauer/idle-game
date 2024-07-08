@@ -50,6 +50,7 @@ data class Level(
 ) {
     fun upgradeEfficiency() = copy(
         level = level + 1,
-        earn = earn + 3,
+        earn = earn + 9,
+        cost = cost + 15,
     )
 }
