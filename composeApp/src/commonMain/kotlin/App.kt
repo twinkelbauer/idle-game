@@ -1,3 +1,4 @@
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.style.TextAlign
@@ -95,6 +98,21 @@ fun Screen() {
                         contentDescription = "Click on this cloud",
                         modifier = Modifier.clickable { viewModel.clickMoney(state) }
                     )
+                    val infiniteTransition = rememberInfiniteTransition()
+                    val kommaZahl = infiniteTransition.animateFloat(
+                        initialValue = 0f, targetValue = 1000f, animationSpec = infiniteRepeatable(
+                            animation = tween(3000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                        )
+                    )
+
+                    Image(
+                        painterResource(Res.drawable.snowflake),
+                        contentDescription = "Falling snowflake",
+                        modifier = Modifier.offset(
+                            x = 0.dp, y = kommaZahl.value.dp)
+                            .rotate(kommaZahl.value)
+                    )
                 }
             }
 
@@ -123,6 +141,11 @@ fun Screen() {
                         style = MaterialTheme.typography.h2,
                         color = Color(255, 255, 255),
                     )
+                    Image(
+                        painterResource(Res.drawable.Dastollebild),
+                        contentDescription = "picture of a town on an island",
+                    )
+
                 }
             }
 
@@ -134,8 +157,9 @@ fun Screen() {
                 ) {
 
                     Column(modifier = Modifier
+                        .shadow(elevation = 20.dp)
                         .clip(RoundedCornerShape(topStart = 3.dp, bottomStart = 3.dp))
-                        .background(Color(255, 245, 160))
+                        .background(Color(255, 245, 160)) //dieses Sandfarbene gelb
                         .fillMaxHeight()
                         .padding(start = 12.dp,  end = 12.dp, top = 4.dp, bottom = 4.dp)
                     ){

@@ -1,3 +1,5 @@
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.times
 import kotlinx.serialization.Serializable
 import util.Gelds
@@ -13,11 +15,11 @@ data class GameState(
     internal val stashedMoney: Gelds,
     val workers: List<GameWorker>,
     val availableJobs: List<GameJob> = listOf(
-        GameJob(1, Level(1, 9.gelds, 1.gelds, 10.seconds)),
+        GameJob(1, Level(1, 28.gelds, 1.gelds, 1.seconds)),
         GameJob(2, Level(1, 49.gelds, 2.gelds, 1.seconds)),
-        GameJob(3, Level(1, 111.gelds, 10.gelds, 1.seconds)),
-        GameJob(4, Level(1, 539.gelds, 55.gelds, 1.seconds)),
-        GameJob(5, Level(1, 1045.gelds, 140.gelds, 1.seconds))
+        GameJob(3, Level(1, 211.gelds, 17.gelds, 1.seconds)),
+        GameJob(4, Level(1, 2008.gelds, 130.gelds, 1.seconds)),
+        GameJob(5, Level(1, 13391.gelds, 643.gelds, 1.seconds))
     ),
 )
 
@@ -50,7 +52,7 @@ data class Level(
 ) {
     fun upgradeEfficiency() = copy(
         level = level + 1,
-        earn = earn + 9,
-        cost = cost + 15,
+        earn = earn.times(BigDecimal.fromFloat(1.9f)).roundToDigitPositionAfterDecimalPoint(0, roundingMode = RoundingMode.CEILING),
+        cost = cost.times(BigDecimal.fromFloat(2.2f)).roundToDigitPositionAfterDecimalPoint(0, roundingMode = RoundingMode.FLOOR),
     )
 }
