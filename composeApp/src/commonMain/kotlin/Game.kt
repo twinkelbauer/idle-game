@@ -1,3 +1,4 @@
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.times
 import kotlinx.serialization.Serializable
 import util.Gelds
@@ -51,7 +52,13 @@ data class Level(
 ) {
     fun upgradeEfficiency() = copy(
         level = level + 1,
-        earn = earn * 1.9F,
-        cost = earn * 2.2F,
+        earn = (earn * 1.9F).roundToDigitPositionAfterDecimalPoint(
+            0,
+            roundingMode = RoundingMode.CEILING
+        ),
+        cost = (earn * 2.2F).roundToDigitPositionAfterDecimalPoint(
+            0,
+            roundingMode = RoundingMode.FLOOR
+        ),
     )
 }
