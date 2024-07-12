@@ -58,6 +58,9 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.bignum)
         }
+        commonMain.dependencies {
+            implementation(libs.kotlin.test)
+        }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
         }

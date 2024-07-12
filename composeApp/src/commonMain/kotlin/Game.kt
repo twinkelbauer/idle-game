@@ -3,6 +3,7 @@ import kotlinx.serialization.Serializable
 import util.Gelds
 import util.GeldsSerializer
 import util.gelds
+import util.times
 import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -50,6 +51,7 @@ data class Level(
 ) {
     fun upgradeEfficiency() = copy(
         level = level + 1,
-        earn = earn * 2,
+        earn = earn * 1.9F,
+        cost = earn * 2.2F,
     )
 }
