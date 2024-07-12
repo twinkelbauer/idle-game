@@ -15,7 +15,7 @@ data class GameState(
     internal val stashedMoney: Gelds,
     val workers: List<GameWorker>,
     val availableJobs: List<GameJob> = listOf(
-        GameJob(1, Level(1, 21.gelds, 1.gelds, 1.seconds)), //cost, earn, duration
+        GameJob(1, Level(1, 23.gelds, 1.gelds, 1.seconds)), //cost, earn, duration
         GameJob(2, Level(1, 49.gelds, 2.gelds, 1.seconds)),
         GameJob(3, Level(1, 211.gelds, 17.gelds, 1.seconds)),
         GameJob(4, Level(1, 2008.gelds, 130.gelds, 1.seconds)),
