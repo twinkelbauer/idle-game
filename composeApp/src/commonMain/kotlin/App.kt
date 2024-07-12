@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.style.TextAlign
@@ -157,7 +156,7 @@ fun Screen() {
                 ) {
 
                     Column(modifier = Modifier
-                        .shadow(elevation = 20.dp)
+                        .verticalScroll(rememberScrollState())
                         .clip(RoundedCornerShape(topStart = 3.dp, bottomStart = 3.dp))
                         .background(Color(255, 245, 160)) //dieses Sandfarbene gelb
                         .fillMaxHeight()
